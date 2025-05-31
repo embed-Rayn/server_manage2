@@ -261,16 +261,42 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 
 ```
+## 6. 스토리지 서버 --> SSD 세팅
+NFS 구성 후 마운트하여 작업하는 것이 안정적으로 보임.
+### NFS 서버 (스토리지 서버, 10.201.225.2)
+```bash
+sudo apt update
+sudo apt install -y nfs-kernel-server
+sudo vim /etc/exports
+```
 
-http://pypi.smc.com/packages/51/72/3d2ed2b7edb6ce29c92702a24058eaa8c8a1c2ac831716bf7c589d265c37/PandasDataFrame-1.0.2-py3-none-any.whl#sha256=6f82c640431713eb553b645d9bade3f30ea4c500bf8874154eb134509b7efa61 (from http://pypi.smc.com/simple/pandasdataframe/)
+```
+/data/pypi/web/packages  10.201.225.0/24(rw,sync,no_subtree_check)
+```
 
-http://pypi.smc.com/packages/51/72/3d2ed2b7edb6ce29c92702a24058eaa8c8a1c2ac831716bf7c589d265c37/PandasDataFrame-1.0.2-py3-none-any.whl#sha256=6f82c640431713eb553b645d9bade3f30ea4c500bf8874154eb134509b7efa61
-http://pypi.smc.com/packages/73/64/16b92c4325f4de9607170e0ac96dd598a1ff132616e89bdecf2af26b324a/PandasDataFrame-1.0.2.tar.gz#sha256=690c4cc5173ca28b21d16aa8ab5213be0bebc0a14ae782ec25dd2fd877362680
+```bash
+sudo exportfs -a
+sudo systemctl restart nfs-kernel-server
+sudo ufw allow from 10.201.225.0/24 to any port nfs
+```
 
+### NFS 클라이언트 (SSD 연결한 서버, 10.201.225.166)
+```bash
+sudo apt update
+sudo apt install -y nfs-common
 
-https://files.pythonhosted.org/packages/51/72/3d2ed2b7edb6ce29c92702a24058eaa8c8a1c2ac831716bf7c589d265c37/PandasDataFrame-1.0.2-py3-none-any.whl#sha256=6f82c640431713eb553b645d9bade3f30ea4c500bf8874154eb134509b7efa61
-https://files.pythonhosted.org/packages/73/64/16b92c4325f4de9607170e0ac96dd598a1ff132616e89bdecf2af26b324a/PandasDataFrame-1.0.2.tar.gz#sha256=690c4cc5173ca28b21d16aa8ab5213be0bebc0a14ae782ec25dd2fd877362680
+sudo mkdir -p /mnt/nas
+sudo mount -t nfs 10.201.225.2:/data/pypi/web/packages /mnt/nas
+sudo mount -o remount,rw /ssd/pypi
 
+# 고정 원하면
+# sudo vim /etc/fstab
+# 아래 추가
+# 10.201.225.2:/data/pypi/web/packages  /mnt/nas  nfs  defaults,_netdev  0  0
+```
 
+### 대망의 실행
+`nohup rsync -aW --info=progress2 /mnt/nas/ /ssd/pypi/web/packages/ > ~/rsync.log 2>&1 &`
 
-/usr/bin/python3 .local/bin/bandersnatch morror
+## 7. SSD -->  내부망 서버
+... 어떤 어려움이 기다리고 있을까??
