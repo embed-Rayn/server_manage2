@@ -251,7 +251,7 @@ trusted-host = pypi.smc.com
 ```bash
 127.0.0.1 localhost
 127.0.1.1 ubuntu
-10.201.225.2    pypi.smc.com <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<추가
+119.86.100.149    pypi.smc.com <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<추가
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     ip6-localhost ip6-loopback
@@ -286,7 +286,7 @@ sudo apt update
 sudo apt install -y nfs-common
 
 sudo mkdir -p /mnt/nas
-sudo mount -t nfs 10.201.225.2:/data/pypi/web/packages /mnt/nas
+sudo mount -t nfs 172.30.1.118:/data/pypi/web/packages /mnt/nas
 sudo mount -o remount,rw /ssd/pypi
 
 # 고정 원하면
@@ -300,3 +300,4 @@ sudo mount -o remount,rw /ssd/pypi
 
 ## 7. SSD -->  내부망 서버
 ... 어떤 어려움이 기다리고 있을까??
+winSCP
