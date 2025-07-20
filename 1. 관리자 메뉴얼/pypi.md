@@ -259,7 +259,10 @@ fe00::0 ip6-localnet
 ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
-
+```
+2. 윈도우: `C:\Windows\System32\drivers\etc\hosts`파일에 추가 
+```bash
+[사내 PyPI 서버 IP]   pypi.smc.com
 ```
 ## 6. 스토리지 서버 --> SSD 세팅
 NFS 구성 후 마운트하여 작업하는 것이 안정적으로 보임.
