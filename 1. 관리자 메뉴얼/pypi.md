@@ -155,6 +155,14 @@ server {
     # 본인의 도메인 또는 IP 주소를 사용합니다.
     server_name pypi.smc.com;
 
+    root /data/pypi/web;
+    index index.html;
+
+    location / {
+        autoindex on;
+        try_files $uri $uri/ =404;
+    }
+
     # /simple 요청 시 자동으로 /simple/로 리디렉션
     location = /simple {
         return 301 /simple/;
@@ -183,7 +191,25 @@ server {
     access_log /var/log/nginx/pypi_access.log;
 }
 ```
+간단버전 현재 적용
+```conf
+server {
+    listen 80;
 
+    server_name pypi.smc.com;
+
+    root /data/pypi/web;
+    index index.html;
+
+    location / {
+        autoindex on;
+        try_files $uri $uri/ =404;
+    }
+    # 에러 로그 파일 / 접근 로그 파일 위치 설정
+    error_log /var/log/nginx/pypi_error.log;
+    access_log /var/log/nginx/pypi_access.log;
+}
+```
 ### 3.3 설정 활성화
 
 생성한 설정 파일을 활성화시키기 위해 심볼릭 링크 생성
@@ -227,6 +253,7 @@ $TTL    604800
 @       IN      NS      ns.smc.com.
 ns      IN      A       192.168.1.100
 pypi    IN      A       192.168.1.101
+llm     IN      A       192.168.1.120
 
 ```
 ---
